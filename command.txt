@@ -1,0 +1,46 @@
+mysql -P 9030 -h 127.0.0.1 -u root --prompt="StarRocks > "
+
+CREATE EXTERNAL CATALOG 'iceberg'
+PROPERTIES
+(
+  "type"="iceberg",
+  "iceberg.catalog.type"="rest",
+  "iceberg.catalog.uri"="http://iceberg-rest:8181",
+  "iceberg.catalog.warehouse"="warehouse",
+  "aws.s3.access_key"="admin",
+  "aws.s3.secret_key"="password",
+  "aws.s3.endpoint"="http://minio:9000",
+  "aws.s3.enable_path_style_access"="true",
+  "enable_iceberg_metadata_cache"="false",
+  "client.factory"="com.starrocks.connector.iceberg.IcebergAwsClientFactory"
+);
+
+set catalog iceberg;
+
+create database bot_db;
+
+use bot_db;
+
+CREATE TABLE IF NOT EXISTS bot_ddvc_hcm_bot_predict (
+    ID STRING,
+    BOT_ID STRING,
+    TEXT STRING,
+    INTENT_CONFIDENCE STRING,
+    INTENT_NAME STRING,
+    STEP INT,
+    NLU_THRESHOLD STRING,
+    SENDER_ID STRING,
+    SOURCE STRING,
+    CREATED_TIME DATETIME,
+    LAST_UPDATED_TIME DATETIME,
+    ID_CHATLOG STRING,
+    UPDATED_INTENT STRING,
+    LEN_CARD_DATA INT,
+    STATUS_DELETE STRING,
+    STATUS_CONFIRM STRING,
+    INTENT_MAP_CLICK_BUTTON STRING
+)
+PROPERTIES (
+    "table"="bot_ddvc_hcm_bot_predict",
+    "format"="iceberg"
+);
